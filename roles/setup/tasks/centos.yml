@@ -20,7 +20,7 @@
     line: "SELINUX=disabled"
 
 - name: 添加EPEL仓库
-  yum: name=epel-release state=latest
+  yum: name=epel-release state=latest update_cache=yes
 
 - name: 安装基础软件包
   yum: 
