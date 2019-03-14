@@ -4,11 +4,18 @@
   - /etc/kubernetes/pki/etcd
   - ~/.kube/
 
-- name: etcd非master上跑时分发etcd证书到master成员
-  copy: src={{ item }} dest=/etc/kubernetes/pki/etcd/
-  with_fileglob:
-    - '/etc/kubernetes/pki/etcd/*'
+- block:
+    - name: etcd非master上跑时分发etcd证书到master成员
+      copy: src=/usr/local/bin/etcdctl dest=/usr/local/bin/etcdctl mode=u+x
+    
+    - name: 分发etcdctl
+      copy: src={{ item }} dest=/etc/kubernetes/pki/
+      with_fileglob:
+        - '/usr/local/bin/etcdctl'
+
   when: groups['etcd'] | intersect(groups['master']) | length == 0
+
+
 
 - name: 分发证书
   copy: src={{ item }} dest=/etc/kubernetes/pki/
